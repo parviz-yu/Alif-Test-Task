@@ -42,6 +42,27 @@ class ProductList:
         print(total)
 
 
+    def edit_item(self, file_name):
+        if self.__is_file_exist(file_name):
+            print('\nРежим изменения списка.')
+            is_completed = False
+            self.__read_file(file_name)
+            n, _, p = input('Параметры товара, которые хотите изменить в формате (Имя - цена): ').split(' ')
+            n_change, _, p_change = input('Новые параметры товара в формате (Имя - цена): ').split(' ')
+            for i in range(len(self.products)):
+                if self.products[i].name == n and self.products[i].price == float(p):
+                    self.products[i].name, self.products[i].price = n_change, p_change
+                    is_completed = True
+            
+            if is_completed:
+                self.__rewrite_file(file_name)
+                print('Товар успешно изменен')
+            else:
+                print('Указанного товара нет в списке.')
+        else:
+            print('Файл не найден.')
+
+
     def delete_item(self, file_name: str) -> None:
         if self.__is_file_exist(file_name):
             print('\nРежим удаления товара.')
@@ -88,20 +109,17 @@ class ProductList:
         return split[-1] in next(os.walk(os.getcwd()))[-1]
 
 
-
 def main() -> None:
     file_name = sys.argv[1]
     command = sys.argv[2]
 
-
     product_list = ProductList()
     COMMANDS = {
     '--Добавить-в-список': product_list.add_item,
-    '--Изменить-запись-в-списке': '',
+    '--Изменить-запись-в-списке': product_list.edit_item,
     '--Удалить-из-списка': product_list.delete_item,
     '--Вычесть-общую-сумму': product_list.calc_sum
     }
-
 
     if command not in COMMANDS:
         print('\nНеправильный ввод. Используйте правильные команды.\n')
@@ -109,8 +127,6 @@ def main() -> None:
             print(k)
 
     COMMANDS[command](file_name)
-
-
 
 
 if __name__ == "__main__":
