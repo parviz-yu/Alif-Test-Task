@@ -34,6 +34,24 @@ class ProductList:
             print('Файл не найден.')
 
 
+    def calc_sum(self, file_name: str) -> None:
+        total = 0
+        self.__read_file(file_name)
+        for item in self.products:
+            total += item.price
+        print(total)
+
+
+    def __read_file(self, file_name: str) -> None:
+        if self.__is_file_exist(file_name):
+            with open(file_name, 'r', encoding='utf-8') as file:
+                for line in file:
+                    name, _, price = line.split(' ')
+                    self.products.append(Product(name, float(price)))
+        else:
+            print('Файл не найден')
+
+
     def __is_file_exist(self, filename: str) -> bool:
         split = filename.split('/')
         if len(split) != 1:
