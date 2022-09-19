@@ -42,12 +42,40 @@ class ProductList:
         print(total)
 
 
+    def delete_item(self, file_name: str) -> None:
+        if self.__is_file_exist(file_name):
+            print('\nРежим удаления товара.')
+            is_completed = False
+            self.__read_file(file_name)
+            n, _, p = input('Параметры товара в формате (Имя - цена): ').split(' ')
+            for i in range(len(self.products)):
+                if self.products[i].name == n and self.products[i].price == float(p):
+                    self.products[i] = ''
+                    is_completed = True
+            
+            if is_completed:
+                self.__rewrite_file(file_name)
+                print('Товар успешно удален.')
+            else:
+                print('Указанного товара нет в списке.')
+        else:
+            print('Файл не найден.')
+
+
+    def __rewrite_file(self, file_name: str) -> None:
+        with open(file_name, 'w', encoding='utf-8') as output:
+            for prod in self.products:
+                if prod:
+                    print(f'{prod.name} — {prod.price}', end='\n', file=output)
+
+
     def __read_file(self, file_name: str) -> None:
         if self.__is_file_exist(file_name):
             with open(file_name, 'r', encoding='utf-8') as file:
                 for line in file:
-                    name, _, price = line.split(' ')
-                    self.products.append(Product(name, float(price)))
+                    if line.strip():
+                        name, _, price = line.split(' ')
+                        self.products.append(Product(name, float(price)))
         else:
             print('Файл не найден')
 
@@ -70,24 +98,20 @@ def main() -> None:
     COMMANDS = {
     '--Добавить-в-список': product_list.add_item,
     '--Изменить-запись-в-списке': '',
-    '--Удалить-из-списка': '',
-    '--Вычесть-общую-сумму': ''
+    '--Удалить-из-списка': product_list.delete_item,
+    '--Вычесть-общую-сумму': product_list.calc_sum
     }
 
 
     if command not in COMMANDS:
-        return f"""
-        \nНеправильный ввод. Используйте правильные команды.\n
-        --Добавить-в-список
-        --Изменить-запись-в-списке
-        --Удалить-из-списка
-        --Вычесть-общую-сумму
-        """
+        print('\nНеправильный ввод. Используйте правильные команды.\n')
+        for k in COMMANDS:
+            print(k)
 
     COMMANDS[command](file_name)
 
 
-    
+
 
 if __name__ == "__main__":
     main()
