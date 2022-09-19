@@ -15,6 +15,7 @@ class ProductList:
     def __init__(self) -> None:
         self.products = []
 
+
     def add_item(self, file_name: str) -> None:
         if self.__is_file_exist(file_name):
             with open(file_name, 'a', encoding='utf-8') as curr_file:
@@ -23,12 +24,15 @@ class ProductList:
                 for line in sys.stdin:
                     if line.rstrip() == 'q':
                         break
-                    print(line, end='', file=curr_file)
-                print('\nНаименования добавлены в список')
+                    *_, price = line.split(' ')
+                    if float(price) > 0:
+                        print(line, end='', file=curr_file)
+                    else:
+                        print('Цена не может быть отрицательной!')
+                print('\nНаименования добавлены в список.')
         else:
-            print('Файл не найден')
+            print('Файл не найден.')
 
-    
 
     def __is_file_exist(self, filename: str) -> bool:
         split = filename.split('/')
