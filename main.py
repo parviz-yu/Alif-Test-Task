@@ -13,7 +13,15 @@ class ProductList:
     def __init__(self) -> None:
         self.products = []
 
-
+    def add_item(self, file_name: str) -> None:
+        print('Для завершения ввода нажмите "q"')
+        with open(file_name, 'a', encoding='utf-8') as curr_file:
+            curr_file.write('\n')
+            for line in sys.stdin:
+                if line.rstrip() == 'q':
+                    break
+                print(line, end='', file=curr_file)
+            print('\nНаименования добавлены в список')
 
 
 
@@ -24,7 +32,7 @@ def main() -> None:
 
     product_list = ProductList()
     COMMANDS = {
-    '--Добавить-в-список': '',
+    '--Добавить-в-список': product_list.add_item,
     '--Изменить-запись-в-списке': '',
     '--Удалить-из-списка': '',
     '--Вычесть-общую-сумму': ''
@@ -40,7 +48,10 @@ def main() -> None:
         --Вычесть-общую-сумму
         """
 
+    COMMANDS[command](file_name)
 
+
+    
 
 if __name__ == "__main__":
     main()
