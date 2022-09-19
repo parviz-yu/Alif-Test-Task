@@ -1,5 +1,7 @@
 import sys
 from dataclasses import dataclass
+import os
+
 
 
 
@@ -14,14 +16,26 @@ class ProductList:
         self.products = []
 
     def add_item(self, file_name: str) -> None:
-        print('Для завершения ввода нажмите "q"')
-        with open(file_name, 'a', encoding='utf-8') as curr_file:
-            curr_file.write('\n')
-            for line in sys.stdin:
-                if line.rstrip() == 'q':
-                    break
-                print(line, end='', file=curr_file)
-            print('\nНаименования добавлены в список')
+        if self.__is_file_exist(file_name):
+            with open(file_name, 'a', encoding='utf-8') as curr_file:
+                print('Для завершения ввода нажмите "q"')
+                curr_file.write('\n')
+                for line in sys.stdin:
+                    if line.rstrip() == 'q':
+                        break
+                    print(line, end='', file=curr_file)
+                print('\nНаименования добавлены в список')
+        else:
+            print('Файл не найден')
+
+    
+
+    def __is_file_exist(self, filename: str) -> bool:
+        split = filename.split('/')
+        if len(split) != 1:
+            os.chdir('/'.join(split[:-1]))
+
+        return split[-1] in next(os.walk(os.getcwd()))[-1]
 
 
 
